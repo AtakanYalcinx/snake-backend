@@ -13,6 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
+
+/**
+ * REST-Controller für die Authentifizierung von Spielern.
+ * Diese Klasse verarbeitet die Login-Anfragen der Spieler und überprüft
+ * die Anmeldedaten anhand der gespeicherten Benutzerdaten.
+ */
+
 @RestController
 @RequestMapping("/api")
 public class AuthController {
