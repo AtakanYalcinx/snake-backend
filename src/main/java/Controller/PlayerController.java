@@ -5,6 +5,13 @@ import Service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+
+/**
+ * Handles API requests related to players.
+ * Provides endpoints for player registration, authentication,
+ * and profile management.
+ */
+
 @RestController
 @RequestMapping("/api/players")
 public class PlayerController {

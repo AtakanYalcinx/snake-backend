@@ -7,6 +7,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+/**
+ * Service-Klasse zur Verwaltung von Spielern.
+ * Diese Klasse stellt die Geschäftslogik für CRUD-Operationen auf der Player-Entität bereit.
+ */
+
+
 @Service
 public class PlayerService {
 

@@ -2,6 +2,11 @@ package Entity;
 
 import jakarta.persistence.*;
 
+/**
+ * Represents a game mode that defines the rules of the game,
+ * such as speed and the number of fruits.
+ */
+
 @Entity
 public class GameMode {
 
@@ -55,5 +60,7 @@ public class GameMode {
     public void setFruitCount(int fruitCount) {
         this.fruitCount = fruitCount;
     }
+
+
 
 }

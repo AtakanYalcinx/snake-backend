@@ -9,6 +9,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Handles API requests related to game modes.
+ * Provides endpoints to manage game modes, including creating,
+ * updating, retrieving, and deleting modes.
+ */
+
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController
 @RequestMapping("/api/gamemodes")

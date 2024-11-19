@@ -8,6 +8,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
+/**
+ * Service-Klasse zur Verwaltung von Highscores.
+ * Diese Klasse stellt die Geschäftslogik für CRUD-Operationen auf der Highscore-Entität bereit.
+ */
+
+
 @Service
 public class HighscoreService {
 

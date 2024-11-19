@@ -3,6 +3,12 @@ package Entity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+
+/**
+ * Represents a player in the game, storing their credentials,
+ * level, total score, and experience points.
+ */
+
 @Entity
 public class Player {
 

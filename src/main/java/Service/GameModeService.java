@@ -9,6 +9,12 @@ import java.util.List;
 import java.util.Optional;
 
 
+/**
+ * Service-Klasse zur Verwaltung von Spielmodi.
+ * Diese Klasse stellt die Geschäftslogik für CRUD-Operationen auf der
+ * GameMode-Entität bereit.
+ */
+
 public class GameModeService {
 
     private final GameModeRepository gameModeRepository;

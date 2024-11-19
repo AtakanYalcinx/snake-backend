@@ -3,6 +3,11 @@ package Entity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+/**
+ * Represents a high score entry for a player,
+ * including the score, rank, and the date the score was achieved.
+ */
+
 @Entity
 public class Highscore {
 

@@ -8,6 +8,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
+/**
+ * Handles API requests related to highscores.
+ * Provides endpoints to retrieve and manage leaderboard entries.
+ */
+
+
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController
 @RequestMapping("/api/highscores")

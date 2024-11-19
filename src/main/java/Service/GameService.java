@@ -9,6 +9,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+
+/**
+ * Service-Klasse zur Verwaltung von Spielen.
+ * Diese Klasse stellt die Geschäftslogik für CRUD-Operationen auf der Game-Entität bereit.
+ */
+
 @Service
 public class GameService {
 

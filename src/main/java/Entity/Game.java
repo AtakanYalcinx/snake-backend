@@ -2,6 +2,11 @@ package Entity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+/**
+ * Represents a game session played by a player.
+ * This entity stores details about the game, such as the player, score,
+ * game mode, difficulty level, and duration.
+ */
 @Entity
 public class Game {
 
