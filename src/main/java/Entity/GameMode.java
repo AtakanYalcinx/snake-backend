@@ -11,6 +11,9 @@ public class GameMode {
 
     private String name;
     private String description;
+    private int speed;
+    private int fruitCount;
+
 
     // Getter und Setter
     public Long getId() {
@@ -36,4 +39,21 @@ public class GameMode {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
+
+    public int getFruitCount() {
+        return fruitCount;
+    }
+
+    public void setFruitCount(int fruitCount) {
+        this.fruitCount = fruitCount;
+    }
+
 }
