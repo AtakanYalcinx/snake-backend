@@ -1,20 +1,14 @@
-package Service;
+package de.htwberlin.snake.snake_backend.Service;
 
-
-import Entity.GameMode;
-import Repository.GameModeRepository;
+import de.htwberlin.snake.snake_backend.Entity.GameMode;
+import de.htwberlin.snake.snake_backend.Repository.GameModeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-
-/**
- * Service-Klasse zur Verwaltung von Spielmodi.
- * Diese Klasse stellt die Geschäftslogik für CRUD-Operationen auf der
- * GameMode-Entität bereit.
- */
-
+@Service
 public class GameModeService {
 
     private final GameModeRepository gameModeRepository;
@@ -39,5 +33,4 @@ public class GameModeService {
     public void deleteGameMode(Long id) {
         gameModeRepository.deleteById(id);
     }
-
 }

@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres-snake
+    environment:
+      POSTGRES_USER: atakan
+      POSTGRES_PASSWORD: yalcin
+      POSTGRES_DB: snake_db1
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  postgres_data:
