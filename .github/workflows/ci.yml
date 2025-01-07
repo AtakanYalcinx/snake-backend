@@ -17,7 +17,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'    # oder 'zulu', je nach Wunsch
+          distribution: 'temurin'
           java-version: '21'
       - name: Grant execute permission for gradle
         run: chmod +x gradlew
