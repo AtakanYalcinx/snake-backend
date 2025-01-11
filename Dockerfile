@@ -1,26 +1,19 @@
-# Build Stage
-FROM eclipse-temurin:21-jdk-alpine as builder
+## BUILD Stage ##
+FROM gradle:jdk21-jammy AS build
+COPY --chown=gradle:gradle . /home/gradle/src
+WORKDIR /home/gradle/src
 
-# Set working directory
-WORKDIR /app
+# Environment Variables (können später genutzt werden)
+ARG DB_PASSWORD
+ARG DB_URL
+ARG DB_USER
 
-# Copy project files into the container
-COPY . .
+# Gradle-Build ausführen
+RUN gradle build --no-daemon
 
-# Run Gradle build to create the Spring Boot JAR file
-RUN ./gradlew bootJar --no-daemon
+## PACKAGE Stage ##
+FROM eclipse-temurin:21-jdk-jammy
+COPY --from=build /home/gradle/src/build/libs/webtech-ws2425-backend-0.0.1-SNAPSHOT.jar app.jar
 
-# Runtime Stage
-FROM eclipse-temurin:21-jre-alpine
-
-# Set working directory
-WORKDIR /app
-
-# Copy the built JAR file from the build stage
-COPY --from=builder /app/build/libs/*.jar app.jar
-
-# Expose the default Spring Boot port
-EXPOSE 8080
-
-# Define the command to run the application
+# Anwendung starten
 ENTRYPOINT ["java", "-jar", "app.jar"]
