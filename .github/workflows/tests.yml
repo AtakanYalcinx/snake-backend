@@ -1,0 +1,62 @@
+name: CI
+
+on: [ push ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v2
+        with:
+          distribution: "adopt"
+          java-version: 21
+
+      - name: Set up Docker
+        run: |
+          docker-compose up -d
+
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          until docker exec snake_postgres pg_isready -U atakan; do
+            echo "Waiting for postgres...";
+            sleep 5;
+          done
+          echo "Postgres is ready!"
+
+      - name: Run tests
+        run: ./gradlew clean test --info --stacktrace
+name: CI
+
+on: [ push ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v2
+        with:
+          distribution: "adopt"
+          java-version: 21
+
+      - name: Set up Docker
+        run: |
+          docker-compose up -d
+
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          until docker exec snake_postgres pg_isready -U atakan; do
+            echo "Waiting for postgres...";
+            sleep 5;
+          done
+          echo "Postgres is ready!"
+
+      - name: Run tests
+        run: ./gradlew clean test --info --stacktrace
