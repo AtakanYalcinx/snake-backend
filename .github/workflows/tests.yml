@@ -1,62 +1,54 @@
-name: CI
+name: CI - Test Workflow
 
-on: [ push ]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Set up JDK 21
-        uses: actions/setup-java@v2
-        with:
-          distribution: "adopt"
-          java-version: 21
-
-      - name: Set up Docker
-        run: |
-          docker-compose up -d
-
-      - name: Wait for PostgreSQL to be ready
-        run: |
-          until docker exec snake_postgres pg_isready -U atakan; do
-            echo "Waiting for postgres...";
-            sleep 5;
-          done
-          echo "Postgres is ready!"
-
-      - name: Run tests
-        run: ./gradlew clean test --info --stacktrace
-name: CI
-
-on: [ push ]
+on: [push]
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: atakan
+          POSTGRES_PASSWORD: yalcin
+          POSTGRES_DB: snake_db1
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U atakan"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
-      - uses: actions/checkout@v2
+      - name: Check out repository
+        uses: actions/checkout@v2
 
       - name: Set up JDK 21
         uses: actions/setup-java@v2
         with:
-          distribution: "adopt"
+          distribution: "temurin"
           java-version: 21
 
-      - name: Set up Docker
+      - name: Grant execute permissions for Gradle Wrapper
+        run: chmod +x gradlew
+
+      - name: Set environment variables
         run: |
-          docker-compose up -d
+          echo "DB_HOST=localhost" >> $GITHUB_ENV
+          echo "DB_PORT=5432" >> $GITHUB_ENV
+          echo "DB_NAME=snake_db1" >> $GITHUB_ENV
+          echo "DB_USER=atakan" >> $GITHUB_ENV
+          echo "DB_PASSWORD=yalcin" >> $GITHUB_ENV
 
       - name: Wait for PostgreSQL to be ready
         run: |
-          until docker exec snake_postgres pg_isready -U atakan; do
-            echo "Waiting for postgres...";
+          until pg_isready -h localhost -p 5432 -U atakan; do
+            echo "Waiting for PostgreSQL to be ready...";
             sleep 5;
           done
-          echo "Postgres is ready!"
+          echo "PostgreSQL is ready!"
 
-      - name: Run tests
+      - name: Build and test with Gradle
         run: ./gradlew clean test --info --stacktrace
