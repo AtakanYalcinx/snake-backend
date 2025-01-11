@@ -1,12 +1,7 @@
 ## BUILD Stage ##
 FROM gradle:jdk21-jammy AS build
-COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
-
-# Environment Variables (falls benötigt)
-ARG DB_PASSWORD
-ARG DB_URL
-ARG DB_USER
+COPY --chown=gradle:gradle . .
 
 # Gradle-Build ausführen
 RUN ./gradlew build --no-daemon
@@ -15,10 +10,10 @@ RUN ./gradlew build --no-daemon
 FROM eclipse-temurin:21-jdk-jammy
 WORKDIR /app
 
-# Kopiere das gebaute JAR-File aus der Build-Stage
+# Kopiere das gebaute JAR-File
 COPY --from=build /home/gradle/src/build/libs/*.jar app.jar
 
-# Port öffnen (falls erforderlich)
+# Port öffnen (Spring Boot nutzt standardmäßig 8080)
 EXPOSE 8080
 
 # Anwendung starten
