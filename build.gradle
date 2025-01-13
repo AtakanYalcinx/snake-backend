@@ -20,7 +20,7 @@ repositories {
 dependencies {
 	// Spring Boot Starter für Webanwendungen
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	// Spring Boot Starter für JPA/Hibernate
+	// Spring Boot Starter für JPA/Hibernate (enthält auch Spring Transaction Management)
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	// Spring Boot Starter für Security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -28,9 +28,9 @@ dependencies {
 	implementation 'org.postgresql:postgresql:42.6.0'
 	// H2-Datenbank für Tests
 	testImplementation 'com.h2database:h2'
-	// Spring Boot Starter für Tests
+	// Spring Boot Starter für Tests (enthält u.a. JUnit, AssertJ, Mockito etc.)
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	// JUnit Plattform
+	// JUnit Plattform (falls separat benötigt)
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
