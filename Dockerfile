@@ -1,20 +1,18 @@
 ## BUILD Stage ##
-FROM gradle:jdk21-jammy AS build
-WORKDIR /home/gradle/src
-COPY --chown=gradle:gradle . .
+FROM gradle:jdk17 as build
+WORKDIR /app
+COPY . .
 
 # Gradle-Build ausführen
-RUN ./gradlew build --no-daemon
+RUN gradle build --no-daemon
 
 ## PACKAGE Stage ##
-FROM eclipse-temurin:21-jdk-jammy
+FROM eclipse-temurin:17-jre
 WORKDIR /app
+COPY --from=build /app/build/libs/*.jar app.jar
 
-# Kopiere das gebaute JAR-File
-COPY --from=build /home/gradle/src/build/libs/*.jar app.jar
-
-# Port öffnen (Spring Boot nutzt standardmäßig 8080)
+# Port konfigurieren
 EXPOSE 8080
 
-# Anwendung starten
+# Startbefehl
 ENTRYPOINT ["java", "-jar", "app.jar"]
