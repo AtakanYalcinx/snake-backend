@@ -4,14 +4,22 @@ import de.htwberlin.snake.snake_backend.Entity.GameMode;
 import de.htwberlin.snake.snake_backend.Repository.GameModeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
+@ActiveProfiles("test") // Aktiviere das Profil "test" für die H2-Datenbank
 
 class GameModeControllerTest {
 
