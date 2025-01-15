@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin(origins = "https://snake-frontend-mlix.onrender.com")
 @RestController
 @RequestMapping("/api/gamemodes")
 public class GameModeController {
