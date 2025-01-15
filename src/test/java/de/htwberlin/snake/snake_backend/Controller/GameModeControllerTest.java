@@ -1,7 +1,7 @@
 package de.htwberlin.snake.snake_backend.Controller;
 
 import de.htwberlin.snake.snake_backend.Entity.GameMode;
-import de.htwberlin.snake.snake_backend.Repository.GameModeRepository;
+import de.htwberlin.snake.snake_backend.Service.GameModeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,26 +22,22 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-@ActiveProfiles("test") // Aktiviert das Testprofil (auch wenn hier nur Mocks verwendet werden)
+@ActiveProfiles("test")
 class GameModeControllerTest {
 
     @Mock
-    private GameModeRepository gameModeRepository;
+    private GameModeService gameModeService;
 
-    // Das Objekt, das wir testen wollen
     private GameModeController controller;
-
     private GameMode gameMode;
 
     @BeforeEach
     void setUp() {
-        // Initialisiert die Mocks (@Mock) in dieser Testklasse
         MockitoAnnotations.openMocks(this);
+        // Controller bekommt einen gemockten Service
+        controller = new GameModeController(gameModeService);
 
-        // Erzeugt den Controller mit dem gemockten Repository
-        controller = new GameModeController(gameModeRepository);
-
-        // Beispiel-GameMode initialisieren
+        // Beispiel-GameMode anlegen
         gameMode = new GameMode();
         gameMode.setId(1L);
         gameMode.setName("Classic");
@@ -55,40 +51,33 @@ class GameModeControllerTest {
 
     @Test
     void testGetGameModeById_Found() {
-        // Given
-        when(gameModeRepository.findById(1L)).thenReturn(Optional.of(gameMode));
+        when(gameModeService.getGameModeById(1L)).thenReturn(Optional.of(gameMode));
 
-        // When
         ResponseEntity<?> response = controller.getGameModeById(1L);
 
-        // Then
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.getBody() instanceof GameMode);
 
         GameMode responseGm = (GameMode) response.getBody();
         assertEquals("Classic", responseGm.getName());
 
-        verify(gameModeRepository, times(1)).findById(1L);
+        verify(gameModeService, times(1)).getGameModeById(1L);
     }
 
     @Test
     void testGetGameModeById_NotFound() {
-        // Given
-        when(gameModeRepository.findById(999L)).thenReturn(Optional.empty());
+        when(gameModeService.getGameModeById(999L)).thenReturn(Optional.empty());
 
-        // When
         ResponseEntity<?> response = controller.getGameModeById(999L);
 
-        // Then
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals("GameMode not found", response.getBody());
 
-        verify(gameModeRepository, times(1)).findById(999L);
+        verify(gameModeService, times(1)).getGameModeById(999L);
     }
 
     @Test
     void testCreateGameMode() {
-        // Given
         GameMode newGameMode = new GameMode();
         newGameMode.setName("NewMode");
 
@@ -96,12 +85,10 @@ class GameModeControllerTest {
         savedGameMode.setId(2L);
         savedGameMode.setName("NewMode");
 
-        when(gameModeRepository.save(any(GameMode.class))).thenReturn(savedGameMode);
+        when(gameModeService.saveGameMode(any(GameMode.class))).thenReturn(savedGameMode);
 
-        // When
         ResponseEntity<?> response = controller.createGameMode(newGameMode);
 
-        // Then
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertTrue(response.getBody() instanceof GameMode);
 
@@ -109,44 +96,37 @@ class GameModeControllerTest {
         assertEquals(2L, result.getId());
         assertEquals("NewMode", result.getName());
 
-        verify(gameModeRepository, times(1)).save(any(GameMode.class));
+        verify(gameModeService, times(1)).saveGameMode(any(GameMode.class));
     }
 
     @Test
     void testDeleteGameMode_Found() {
-        // Given
-        when(gameModeRepository.existsById(1L)).thenReturn(true);
+        when(gameModeService.getGameModeById(1L)).thenReturn(Optional.of(gameMode));
 
-        // When
         ResponseEntity<?> response = controller.deleteGameMode(1L);
 
-        // Then
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
         assertNull(response.getBody());
 
-        verify(gameModeRepository, times(1)).deleteById(1L);
+        verify(gameModeService, times(1)).getGameModeById(1L);
+        verify(gameModeService, times(1)).deleteGameMode(1L);
     }
 
     @Test
     void testDeleteGameMode_NotFound() {
-        // Given
-        when(gameModeRepository.existsById(999L)).thenReturn(false);
+        when(gameModeService.getGameModeById(999L)).thenReturn(Optional.empty());
 
-        // When
         ResponseEntity<?> response = controller.deleteGameMode(999L);
 
-        // Then
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals("GameMode not found", response.getBody());
 
-        verify(gameModeRepository, never()).deleteById(999L);
+        verify(gameModeService, times(1)).getGameModeById(999L);
+        verify(gameModeService, never()).deleteGameMode(999L);
     }
-
-    // Neue Testfälle
 
     @Test
     void testGetAllGameModes() {
-        // Given
         GameMode gm1 = new GameMode();
         gm1.setId(1L);
         gm1.setName("Classic");
@@ -155,13 +135,10 @@ class GameModeControllerTest {
         gm2.setId(2L);
         gm2.setName("Speed");
 
-        List<GameMode> gameModeList = Arrays.asList(gm1, gm2);
-        when(gameModeRepository.findAll()).thenReturn(gameModeList);
+        when(gameModeService.getAllGameModes()).thenReturn(Arrays.asList(gm1, gm2));
 
-        // When
         ResponseEntity<List<GameMode>> response = controller.getAllGameModes();
 
-        // Then
         assertEquals(HttpStatus.OK, response.getStatusCode());
         List<GameMode> result = response.getBody();
         assertNotNull(result);
@@ -169,17 +146,14 @@ class GameModeControllerTest {
         assertEquals("Classic", result.get(0).getName());
         assertEquals("Speed", result.get(1).getName());
 
-        verify(gameModeRepository, times(1)).findAll();
+        verify(gameModeService, times(1)).getAllGameModes();
     }
 
     @Test
     void testUpdateGameMode_Found() {
-        // Given: Ein vorhandener GameMode wird gefunden
         Long id = 1L;
-        GameMode existingGameMode = gameMode;
-        when(gameModeRepository.findById(id)).thenReturn(Optional.of(existingGameMode));
+        when(gameModeService.getGameModeById(id)).thenReturn(Optional.of(gameMode));
 
-        // Wir simulieren eine Aktualisierung (z. B. neuer Name und Beschreibung)
         GameMode updateRequest = new GameMode();
         updateRequest.setName("UpdatedName");
         updateRequest.setDescription("Updated Description");
@@ -189,23 +163,20 @@ class GameModeControllerTest {
         updateRequest.setBorderActive(false);
         updateRequest.setRandomObstacles(true);
 
-        // Wenn die Save-Methode aufgerufen wird, geben wir das aktualisierte Objekt zurück
         GameMode updatedGameMode = new GameMode();
         updatedGameMode.setId(id);
-        updatedGameMode.setName(updateRequest.getName());
-        updatedGameMode.setDescription(updateRequest.getDescription());
-        updatedGameMode.setSpeed(updateRequest.getSpeed());
-        updatedGameMode.setFruitCount(updateRequest.getFruitCount());
-        updatedGameMode.setFruitColor(updateRequest.getFruitColor());
-        updatedGameMode.setBorderActive(updateRequest.isBorderActive());
-        updatedGameMode.setRandomObstacles(updateRequest.isRandomObstacles());
+        updatedGameMode.setName("UpdatedName");
+        updatedGameMode.setDescription("Updated Description");
+        updatedGameMode.setSpeed(10);
+        updatedGameMode.setFruitCount(4);
+        updatedGameMode.setFruitColor("Blue");
+        updatedGameMode.setBorderActive(false);
+        updatedGameMode.setRandomObstacles(true);
 
-        when(gameModeRepository.save(any(GameMode.class))).thenReturn(updatedGameMode);
+        when(gameModeService.saveGameMode(any(GameMode.class))).thenReturn(updatedGameMode);
 
-        // When: Den Update-Endpoint aufrufen
         ResponseEntity<?> response = controller.updateGameMode(id, updateRequest);
 
-        // Then
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.getBody() instanceof GameMode);
         GameMode result = (GameMode) response.getBody();
@@ -217,28 +188,24 @@ class GameModeControllerTest {
         assertFalse(result.isBorderActive());
         assertTrue(result.isRandomObstacles());
 
-        verify(gameModeRepository, times(1)).findById(id);
-        verify(gameModeRepository, times(1)).save(any(GameMode.class));
+        verify(gameModeService, times(1)).getGameModeById(id);
+        verify(gameModeService, times(1)).saveGameMode(any(GameMode.class));
     }
 
     @Test
     void testUpdateGameMode_NotFound() {
-        // Given: Es wird kein GameMode gefunden
         Long id = 999L;
-        when(gameModeRepository.findById(id)).thenReturn(Optional.empty());
+        when(gameModeService.getGameModeById(id)).thenReturn(Optional.empty());
 
-        // Das Update-Request-Objekt
         GameMode updateRequest = new GameMode();
         updateRequest.setName("UpdatedName");
 
-        // When: Den Update-Endpoint aufrufen
         ResponseEntity<?> response = controller.updateGameMode(id, updateRequest);
 
-        // Then: Da kein GameMode gefunden wurde, sollte ein 404-Status zurückgegeben werden
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals("GameMode not found", response.getBody());
 
-        verify(gameModeRepository, times(1)).findById(id);
-        verify(gameModeRepository, never()).save(any(GameMode.class));
+        verify(gameModeService, times(1)).getGameModeById(id);
+        verify(gameModeService, never()).saveGameMode(any(GameMode.class));
     }
 }
