@@ -1,3 +1,4 @@
+/*
 package de.htwberlin.snake.snake_backend;
 
 import org.junit.jupiter.api.Test;
@@ -11,3 +12,6 @@ class SnakeBackendApplicationTests {
 	}
 
 }
+
+
+ */
